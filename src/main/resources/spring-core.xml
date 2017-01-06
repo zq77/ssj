@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+                         http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+                         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--扫描包，排除springMVC扫描的包，重复扫描会有问题-->
+    <context:component-scan base-package="com.example">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <context:property-placeholder location="jdbc.properties"/>
+
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="${jdbc.driverClassName}"/>
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="user" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <!--jpaVendorAdapter:指定实现JPA的适配器 -->
+    <bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="generateDdl" value="false" />
+        <property name="database" value="MYSQL" />
+        <property name="databasePlatform" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
+    </bean>
+
+    <!--jpa管理工厂-->
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <!--数据源-->
+        <property name="dataSource" ref="dataSource"/>
+        <!--扫描包-->
+        <property name="packagesToScan" value="com.example.model"/>
+
+        <!--适配器-->
+        <property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
+
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+        </property>
+
+        <!--基本配置-->
+        <property name="jpaProperties">
+            <props>
+                <!--基本配置-->
+                <prop key="hibernate.format_sql">false</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <!-- 自动创建|更新|验证数据库表结构。如果不是此方面的需求建议set value="none" -->
+                <prop key="hibernate.hbm2ddl.auto">none</prop>
+
+                <!--二级缓存-->
+                <prop key="hibernate.cache.use_query_cache">false</prop>
+                <prop key="hibernate.cache.use_second_level_cache">true</prop>
+                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!--配置事务-->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <!--配置基于注解的事务-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!--配置spring data-->
+    <jpa:repositories base-package="com.example.repository"
+                      entity-manager-factory-ref="entityManagerFactory"></jpa:repositories>
+</beans>
