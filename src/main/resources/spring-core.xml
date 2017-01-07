@@ -48,8 +48,8 @@
                 <!--基本配置-->
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.show_sql">true</prop>
-                <!-- 自动创建|更新|验证数据库表结构。如果不是此方面的需求建议set value="none" -->
-                <prop key="hibernate.hbm2ddl.auto">none</prop>
+                <!-- 自动创建|更新|验证数据库表结构。如果不是此方面的需求建议set value="validate" -->
+                <prop key="hibernate.hbm2ddl.auto">validate</prop>
 
                 <!--二级缓存-->
                 <prop key="hibernate.cache.use_query_cache">false</prop>

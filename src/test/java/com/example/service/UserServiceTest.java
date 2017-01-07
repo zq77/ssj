@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -35,6 +36,10 @@ public class UserServiceTest extends AbstractJUnit4SpringContextTests {
     public void test_transaction_rollback() {
         try {
             userRepository.save(createUser());
+        } catch (Exception e) {
+
+        }
+        try {
             User user = userService.transactionRollBack(1, "hehe");
             fail();
         } catch (Exception e) {
@@ -42,6 +47,12 @@ public class UserServiceTest extends AbstractJUnit4SpringContextTests {
         }
     }
 
+    @Test
+    public void test_page() {
+        Page<User> page = userService.page(1, 2);
+        assertThat(page.isFirst(), is(true));
+        assertThat(page.getContent().size(), is(2));
+    }
 
     private User createUser() {
         User user = new User();

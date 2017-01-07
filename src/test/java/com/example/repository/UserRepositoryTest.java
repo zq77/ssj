@@ -59,7 +59,10 @@ public class UserRepositoryTest extends AbstractJUnit4SpringContextTests {
         }
         Optional<User> userOptional = userRepository.findByNameAndPassword("hehe", "hehe2");
         assertThat(userOptional.isPresent(), is(true));
-
+        userOptional = userRepository.findByNameAndPassword2("hehe", "hehe2");
+        assertThat(userOptional.isPresent(), is(true));
+        userOptional = userRepository.findByNameAndPassword3("hehe", "hehe2");
+        assertThat(userOptional.isPresent(), is(true));
     }
 
     @Test
