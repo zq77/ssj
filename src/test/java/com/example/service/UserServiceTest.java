@@ -1,23 +1,18 @@
 package com.example.service;
 
+import com.example.IntegrationTest;
 import com.example.model.User;
 import com.example.repository.UserRepository;
 import java.util.UUID;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.fail;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:spring-core.xml")
-public class UserServiceTest extends AbstractJUnit4SpringContextTests {
+public class UserServiceTest extends IntegrationTest {
 
     @Autowired
     private UserService userService;
@@ -28,19 +23,15 @@ public class UserServiceTest extends AbstractJUnit4SpringContextTests {
     @Test
     public void test_transaction_commit() {
         String name = UUID.randomUUID().toString();
-        User user = userService.transactionRollBack(1, name);
+        User user = userService.transactionRollBack(name);
         assertThat(user.getName(), is(name));
     }
 
     @Test
     public void test_transaction_rollback() {
+        userRepository.save(createUser());
         try {
-            userRepository.save(createUser());
-        } catch (Exception e) {
-
-        }
-        try {
-            User user = userService.transactionRollBack(1, "hehe");
+            User user = userService.transactionRollBack("hehe");
             fail();
         } catch (Exception e) {
 
@@ -49,9 +40,10 @@ public class UserServiceTest extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void test_page() {
-        Page<User> page = userService.page(1, 2);
+        userRepository.save(createUser());
+        Page<User> page = userService.page(1, 1);
         assertThat(page.isFirst(), is(true));
-        assertThat(page.getContent().size(), is(2));
+        assertThat(page.getContent().size(), is(1));
     }
 
     private User createUser() {

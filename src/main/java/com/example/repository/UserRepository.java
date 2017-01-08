@@ -1,14 +1,16 @@
 package com.example.repository;
 
 import com.example.model.User;
+import java.util.List;
 import java.util.Optional;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends BaseRepository<User, Integer> {
 
     Optional<User> findByName(String name);
+
+    List<User> testImpl(String name);
 
     Optional<User> findByNameAndPassword(String name, String password);
 

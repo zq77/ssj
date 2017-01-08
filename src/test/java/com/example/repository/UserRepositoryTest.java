@@ -1,35 +1,31 @@
 package com.example.repository;
 
+import com.example.IntegrationTest;
 import com.example.model.User;
+import java.util.List;
 import java.util.Optional;
-import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:spring-core.xml")
-public class UserRepositoryTest extends AbstractJUnit4SpringContextTests {
+public class UserRepositoryTest extends IntegrationTest {
 
     @Autowired
     private UserRepository userRepository;
 
-    @Test
-    public void test_create() {
-        User user = createUser();
-        userRepository.save(user);
+    @Before
+    public void setUp() throws Exception {
+        Optional<User> userOptional = userRepository.findByName("hehe");
+        if (!userOptional.isPresent()) {
+            userRepository.save(createUser());
+        }
     }
 
     @Test
     public void test_find_by_name() {
-        User user = createUser();
-        userRepository.save(user);
         Optional<User> userOptional = userRepository.findByName("hehe");
         assertThat(userOptional.isPresent(), is(true));
     }
@@ -52,11 +48,6 @@ public class UserRepositoryTest extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void test_findByNameAndPassword() {
-        try {
-            userRepository.save(createUser());
-        } catch (Exception e) {
-            // can throw exception
-        }
         Optional<User> userOptional = userRepository.findByNameAndPassword("hehe", "hehe2");
         assertThat(userOptional.isPresent(), is(true));
         userOptional = userRepository.findByNameAndPassword2("hehe", "hehe2");
@@ -67,15 +58,18 @@ public class UserRepositoryTest extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void test_execute_sql_count() {
-        try {
-            userRepository.save(createUser());
-        } catch (Exception e) {
-            // can throw exception
-        }
         Optional<User> userOptional = userRepository.findByName("hehe");
         User user = userOptional.get();
         userRepository.getOne(user.getId());
         userRepository.getOne(user.getId());
+    }
+
+    @Test
+    public void test_impl() {
+        List<User> users = userRepository.testImpl("hehe");
+        assertThat(users.size(), is(1));
+        users = userRepository.testImpl("hah0");
+        assertThat(users.size(), is(0));
     }
 
     private User createUser() {

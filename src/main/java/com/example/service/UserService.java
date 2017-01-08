@@ -17,13 +17,13 @@ public class UserService {
     private UserRepository userRepository;
 
     @Transactional
-    public User transactionRollBack(Integer userId, String updateUserName) {
+    public User transactionRollBack(String updateUserName) {
         User user = new User();
         user.setName(UUID.randomUUID().toString());
         user.setPassword(UUID.randomUUID().toString());
         userRepository.save(user);
 
-        User one = userRepository.getOne(userId);
+        User one = userRepository.getOne(user.getId());
         one.setName(updateUserName);
         return one;
     }
