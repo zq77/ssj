@@ -4,16 +4,16 @@ import com.example.IntegrationTest;
 import com.example.model.User;
 import java.util.List;
 import java.util.Optional;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class UserRepositoryTest extends IntegrationTest {
 
-    @Autowired
+    @Inject
     private UserRepository userRepository;
 
     @Before

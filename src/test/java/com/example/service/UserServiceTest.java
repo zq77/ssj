@@ -4,8 +4,8 @@ import com.example.IntegrationTest;
 import com.example.model.User;
 import com.example.repository.UserRepository;
 import java.util.UUID;
+import javax.inject.Inject;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -14,10 +14,10 @@ import static org.junit.Assert.fail;
 
 public class UserServiceTest extends IntegrationTest {
 
-    @Autowired
+    @Inject
     private UserService userService;
 
-    @Autowired
+    @Inject
     private UserRepository userRepository;
 
     @Test

@@ -2,10 +2,9 @@ package com.example.service;
 
 import com.example.model.User;
 import com.example.repository.UserRepository;
-import java.util.List;
 import java.util.UUID;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    @Autowired
+    @Inject
     private UserRepository userRepository;
 
     @Transactional
